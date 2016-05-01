@@ -1,6 +1,7 @@
 # Bankscrap::BBVANetCash
 
 Bankscrap adapter for the API behind BBVA's [Net Cash mobile app](https://play.google.com/store/apps/details?id=com.bbva.netcash).
+
 This adapter is only valid for **company accounts** (the ones that have access to Net Cash). For personal accounts 
 you should use [bankscrap-bbva](https://github.com/bankscrap/bankscrap-bbva).
 

@@ -83,8 +83,8 @@ module Bankscrap
           "peticionMovimientosKYOS" => {
             "numAsunto" => account.iban,
             "bancoAsunto" => "BANCO BILBAO VIZCAYA ARGENTARIA S.A",
-            "fechaDesde" => "20160102",
-            "fechaHasta" => "20160501",
+            "fechaDesde" => start_date.strftime("%Y%m%d"),
+            "fechaHasta" => end_date.strftime("%Y%m%d"),
             "concepto" => [],
             "importe_Desde" => "",
             "importe_Hasta" => "",
@@ -108,8 +108,6 @@ module Bankscrap
         with_headers(custom_headers) do
           # Loop over pagination
           loop do
-            # new_url = offset ? (url + "&offset=#{offset}") : url
-            # new_url = pagination_balance ? (new_url + "&paginationBalance=#{pagination_balance}") : new_url
             json = JSON.parse(post(url, fields: params.to_json))['respuestamovimientos']
 
             unless json['movimientos'].blank?
@@ -172,7 +170,7 @@ module Bankscrap
           id: data['codRmsoperS'],
           amount: transaction_amount(data),
           description: data['concepto'] || data['descConceptoTx'],
-          effective_date: Date.strptime(data['fechaValor'], '%d/%m/%Y'), # TODO: check if this should be data['fechaContable']
+          effective_date: Date.strptime(data['fechaContable'], '%d/%m/%Y'),
           currency: data['divisa'],
           balance: Money.new(data['saldoContable'].to_f * 100, data['currency'])
         )
