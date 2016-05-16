@@ -110,17 +110,25 @@ module Bankscrap
           loop do
             json = JSON.parse(post(url, fields: params.to_json))['respuestamovimientos']
 
-            unless json['movimientos'].blank?
-              transactions += json['movimientos'].map do |data|
-                build_transaction(data, account)
+            if json['movimientos'].is_a?(Array)
+              unless json['movimientos'].blank?
+                transactions += json['movimientos'].map do |data|
+                  build_transaction(data, account)
+                end
+                
+                params['peticionMovimientosKYOS']['paginacionMOVDIA'] = json['paginacionMOVDIA']
+                params['peticionMovimientosKYOS']['paginacionTLSMT016'] = json['paginacionTLSMT016']
+                params['peticionMovimientosKYOS']['paginacionTLSMT017'] = json['paginacionTLSMT017']
               end
-              
-              params['peticionMovimientosKYOS']['paginacionMOVDIA'] = json['paginacionMOVDIA']
-              params['peticionMovimientosKYOS']['paginacionTLSMT016'] = json['paginacionTLSMT016']
-              params['peticionMovimientosKYOS']['paginacionTLSMT017'] = json['paginacionTLSMT017']
+              break unless (json['descripcion'] == 'More records available')
+            elsif json['movimientos'].is_a?(Hash)
+              # There was only 1 transaction for this query
+              transactions << build_transaction(json['movimientos'], account)
+              break
+            else
+              # No transactions
+              break
             end
-
-            break unless json['descripcion'] == 'More records available'
           end
         end
 
