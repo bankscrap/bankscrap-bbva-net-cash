@@ -10,28 +10,24 @@ module Bankscrap
       ACCOUNTS_ENDPOINT     = '/SESKYOS/kyos_mult_web_servicios_02/services/rest/CuentasServiceREST/getDatosCuentas'.freeze
       TRANSACTIONS_ENDPOINT = '/SESKYOS/kyos_mult_web_servicios_02/services/rest/CuentasServiceREST/getMovimientos'.freeze
 
-      def initialize(user, password, log: false, debug: false, extra_args: nil)
-        @company_code = extra_args.with_indifferent_access['company_code']
-        @user = format_user(user.dup, @company_code.to_s.dup)
-        @password = password.upcase
-        @log = log
-        @debug = debug
+      REQUIRED_CREDENTIALS  = [:user, :password, :company_code]
 
-        initialize_connection
+      def initialize(credentials = {})
+        super do
+          # We need to format the user
+          @user = format_user(@user, @company_code.to_s.dup)
 
-        # Create a user_agent with a random string for privacy
-        user_agent = SecureRandom.hex(32).upcase + ';Android;LGE;Nexus 5;1080x1776;Android;5.1.1;BMES;4.4;xxhd'
+          # Create a user_agent with a random string for privacy
+          user_agent = SecureRandom.hex(32).upcase + ';Android;LGE;Nexus 5;1080x1776;Android;5.1.1;BMES;4.4;xxhd'
 
-        add_headers(
-          'User-Agent'       => user_agent,
-          'Accept'           => 'application/json',
-          'Accept-Charset'   => 'UTF-8',
-          'Connection'       => 'Keep-Alive',
-          'Host'             => 'www.bbvanetcash.mobi'
-        )
-
-        login
-        super
+          add_headers(
+            'User-Agent'       => user_agent,
+            'Accept'           => 'application/json',
+            'Accept-Charset'   => 'UTF-8',
+            'Connection'       => 'Keep-Alive',
+            'Host'             => 'www.bbvanetcash.mobi'
+          )
+        end
       end
 
       # Fetch all the accounts for the given user
