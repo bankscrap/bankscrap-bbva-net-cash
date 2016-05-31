@@ -159,11 +159,10 @@ module Bankscrap
           bank: self,
           id: data['referencia'],
           name: data['empresaDes'],
-          available_balance: data['saldoValor'].to_f,
-          balance: data['saldoContable'],
-          currency: data['divisa'],
+          available_balance: Money.new(data['saldoValor'].to_f * 100, data['divisa']),
+          balance: Money.new(data['saldoContable'].to_f * 100, data['divisa']),
           iban: data['numeroAsunto'],
-          description: "#{data['bancoDes']} #{data['numeroAsuntoMostrar']}"
+          description: "#{data['bancoDes']}: #{data['numeroAsuntoMostrar']}"
         )
       end
 
@@ -175,8 +174,7 @@ module Bankscrap
           amount: transaction_amount(data),
           description: data['concepto'] || data['descConceptoTx'],
           effective_date: Date.strptime(data['fechaContable'], '%d/%m/%Y'),
-          currency: data['divisa'],
-          balance: Money.new(data['saldoContable'].to_f * 100, data['currency'])
+          balance: Money.new(data['saldoContable'].to_f * 100, data['divisa'])
         )
       end
 
