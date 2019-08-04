@@ -5,6 +5,8 @@ Bankscrap adapter for the API behind BBVA's [Net Cash mobile app](https://play.g
 This adapter is only valid for **company accounts** (the ones that have access to Net Cash). For personal accounts 
 you should use [bankscrap-bbva](https://github.com/bankscrap/bankscrap-bbva).
 
+Contact: open an issue or email us at bankscrap@protonmail.com.
+
 ## Installation
 
 Add this line to your application's Gemfile:
